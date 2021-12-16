@@ -1,0 +1,19 @@
+【一】人物跳跃实现的步骤
+1、创建表示按键按下的 Bool 值 isJumpClicked
+2、创建检测按键按下的方法，并放入 Update 中运行
+---    void KeyCheck()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            isJumpClicked = true;     //*这个方法只用来将按键状态的 Bool 改为 True
+        }
+    }
+3、创建跳跃方法，里面加入Bool值的判断，判断成功后将 isJumpClicked 改回 False
+---    void Jump()
+    {
+        if (isJumpClicked)
+        {
+            isJumpClicked = false;   //*改回 False
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);   //*如果 Rigidbody 为2D，那么 ForceMode 也要为2D
+        }
+    }
