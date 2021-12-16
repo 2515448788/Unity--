@@ -1,0 +1,11 @@
+冷却时间的制作
+1、需要的变量
+---下一次攻击的时间点
+---攻击的冷却时间
+
+2、实现步骤
+---        if (Time.time > nextAttack)
+        {
+            Instantiate(Bomb, transform.position, transform.rotation);
+            nextAttack = Time.time + attackRate;
+        }
