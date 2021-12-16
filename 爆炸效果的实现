@@ -1,0 +1,27 @@
+爆炸效果实现总结
+1、必要参数
+---爆炸范围（float）、爆炸会影响的图层（LayerMask）、爆炸点偏移（Vector2）、爆炸力度（float）
+2、主要方法
+---    public void Explotion()
+    {
+        Vector2 pos = transform.position;  //*获取物体当前的位置
+        coll.enabled = false;   //*关闭碰撞
+        rig.gravityScale = 0;  //*重力系数归0
+
+        //创建一个数组用于储存探测到的物体的碰撞体，探测方法使用 Physics2D.OverlapCircleAll ，参数填入偏移后的位置，范围，目标图层（可多选）
+
+        Collider2D[] arroundObjects = Physics2D.OverlapCircleAll(pos + explotionOffset, radius, targetLayer); 
+
+        //遍历每一个获取到的碰撞体
+
+        foreach (var item in arroundObjects)
+        {
+            Vector2 forcePos = item.transform.position - transform.position;  //*获取位置差值
+            Vector2 explotionForce = -forcePos * bombForce;  //*计算爆炸力（位置差值的负数 乘 爆炸力度）
+            item.GetComponent<Rigidbody2D>().AddForce(explotionForce + Vector2.up, ForceMode2D.Impulse);
+            
+            //*添加爆炸力（AddForce） ，参数填入（爆炸力+Vector2.up，模式为 Impulse）
+        }
+    }
+
+3、将其挂载到爆炸动画上
