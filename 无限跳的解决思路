@@ -1,0 +1,29 @@
+无限跳的解决方法--射线
+1、重载创建射线的方法--加入offset参数，整合射线绘制
+原：RaycastHit2D ray = Physics2D.Raycast(.....);
+---->   RaycastHit2D CreateRay(Vector2 offset, Vector2 rayDirection, float rayLengeth, LayerMask layer)
+    {
+        Vector2 pos = transform.position;   //*获取物体当前的位置
+
+        //*主体的射线创建方法---> RaycastHit2D ray = Physics2D.Raycast(.....);
+        RaycastHit2D ray = Physics2D.Raycast(pos + offset, rayDirection, rayLengeth, layer);
+
+        Color color = ray ? Color.red : Color.green;   //*颜色---> ray触发时为红色，否则为绿色
+        Debug.DrawRay(pos + offset, rayDirection * rayLengeth, color);   //*射线绘制
+        return ray;   //*返回值
+    }
+
+2、创建地面检测方法，并放入FixUpdate中运行
+    void GroundCheck()
+    {
+        Vector2 groundOffset = new Vector2(groundRayOffsetX, groundRayOffsetY);
+        RaycastHit2D groundRay = CreateRay(groundOffset, Vector2.down, groundRayLength, ground);
+        if (groundRay)
+        {
+            isGround = true;
+        }
+        else
+        {
+            isGround = false;
+        }
+    }
