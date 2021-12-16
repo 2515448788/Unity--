@@ -1,0 +1,45 @@
+鼠标控制角色移动的实现方法：
+一、前提：
+1、角色必须挂上一个 Nav Mesh Agent(导航网格代理)组件
+2、地面网格必须经过导航系统的烘焙（可移动）
+
+二、创建空物体 MouseManager 并挂上 MouseManager 的脚本（名称随意，此处仅举例）
+
+三、添加命名空间
+using UnityEngine.Events;
+
+四、创建事件
+1、[System.Serializable]
+--加上文件头才能在Unity界面内显示
+2、public class EventVector3 : UnityEvent<Vector3> { };
+--注意：这里的事件必须继承 UnityEvent 的类，尖括号内写上需要的参数类型
+3、public EventVector3 OnMouseClicked;
+--实例化事件
+
+五、创建方法检测并执行 OnMouseClicked 的事件---此处一般采用射线检测的方法
+例：射线检测并传入参数
+1、RaycastHit hitInfo;
+--创建一个 RaycastHit 的变量用于储存射线所碰撞到的物体信息
+2、Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+--创建一个名称为 ray 的射线，起始点为主相机所在，并指向鼠标所在的位置
+3、if (Physics.Raycast(ray, out hitInfo))
+  {
+
+  }
+--RaycastHit类型变量所储存的信息一般通过 if 语句内的 Physics.Raycast 方法获得，填入射线名称和储存信息的变量名称即可
+4、 if (Input.GetMouseButtonDown(0) && hitInfo.collider != null)
+    {
+      if (hitInfo.collider.gameObject.tag == "Ground")
+      {
+        OnMouseClicked?.Invoke(hitInfo.point);
+      }
+    }
+--判断并执行事件，当鼠标按下，射线所接触到的物体有碰撞体，物体的tag为地面（此处自行设定）
+--？代表事件是否为空，若不为空则调用，Invoke的括号内写上事件所需的 Vector3 型参数
+
+------------注意：以上2，3，4都需放入方法内并在Update执行
+
+六、订阅/添加事件（添加多个事件会被逐一执行）
+--写完脚本后，返回 unity ，此时在 MouseManager 所挂的脚本下就有了跟UI一样可以挂载其他物体的区域，点击加号创建一个事件，将角色拖入进来
+右侧选择 NavMeshAgent 方法下的 destination（目标点） 参数，此时，hitInfo.point（射线与地面的接触点）就会赋值给 destination（目标点）
+最后，Nav Mesh Agent(导航网格代理)组件有了目标点便会自动让角色朝点击点移动
