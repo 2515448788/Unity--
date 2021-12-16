@@ -16,8 +16,8 @@
 
         foreach (var item in arroundObjects)
         {
-            Vector2 forcePos = item.transform.position - transform.position;  //*获取位置差值
-            Vector2 explotionForce = -forcePos * bombForce;  //*计算爆炸力（位置差值的负数 乘 爆炸力度）
+            Vector2 forcePos = item.transform.position - transform.position;  //*获取位置差值（注意！！！！此处是物体的位置减去炸弹本体位置的差值）
+            Vector2 explotionForce = forcePos * bombForce;  //*计算爆炸力（位置差值 乘 爆炸力度）
             item.GetComponent<Rigidbody2D>().AddForce(explotionForce + Vector2.up, ForceMode2D.Impulse);
             
             //*添加爆炸力（AddForce） ，参数填入（爆炸力+Vector2.up，模式为 Impulse）
